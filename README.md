@@ -1,6 +1,6 @@
 wordsworth
 ==========
-Frequency analysis of letters, words and arbitrary-length n-tuples of words.
+Frequency analysis of words, letter, n-grams nad more!
 ![Alt text](/screenshots/screenshot5.png?raw=true "screenshot5.png")
 ###Setup
 Before you get started you need to install the python `blessings` library to colorize the terminal output. 
