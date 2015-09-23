@@ -9,7 +9,7 @@ $ sudo pip install blessings
 ```
 
 ###Basic Usage:
-####Example 1: Print the top 50 n-words in textfile.txt
+####Example 1: Print the top 50 n-grams in textfile.txt
 ```
 $ python wordsworth.py --filename textfile.txt --top 50
 ```
@@ -17,7 +17,7 @@ $ python wordsworth.py --filename textfile.txt --top 50
 ```
 $ python wordsworth.py -f textfile.txt -t 50
 ```
-####Example 2: Print the top n-tuples of up to 10 words in textfile.txt
+####Example 2: Print the top n-grams of up to 10 words in textfile.txt
 ```
 $ python wordsworth.py --filename textfile.txt --ntuple 10
 ```
