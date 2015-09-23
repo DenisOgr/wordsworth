@@ -3,7 +3,7 @@ wordsworth
 Frequency analysis of letters, words and arbitrary-length n-tuples of words.
 ![Alt text](/screenshots/screenshot5.png?raw=true "screenshot5.png")
 ###Setup
-Before you get started you need to install the python Blessing library to colorize the terminal output. 
+Before you get started you need to install the python `blessings` library to colorize the terminal output. 
 ```
 $ sudo pip install blessings
 ```
