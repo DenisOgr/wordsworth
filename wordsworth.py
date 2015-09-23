@@ -147,9 +147,6 @@ class wordsworth:
 
         print('Lexical density = ' + str(self.word_stats['lexical_density'])[:5] + '%')
 
-        print('\nWritten results to ' + args.inputfile.split('.')[0] + '-stats.txt\n')
-    
-    
     def init_word_counters(self):
         self.max_n_word = args.max_n_word
         self.n_words = ['' for i in range(self.max_n_word)]
