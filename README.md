@@ -8,7 +8,7 @@ Before you get started you need to install the python `blessings` library to col
 $ sudo pip install blessings
 ```
 
-###Basic usage of `wordsworth`:
+###Basic Usage:
 ####Example 1: Print the top 50 n-words in textfile.txt
 ```
 $ python wordsworth.py --filename textfile.txt --top 50
