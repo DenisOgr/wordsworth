@@ -2,35 +2,41 @@ wordsworth
 ==========
 Frequency analysis of letters, words and arbitrary-length n-tuples of words.
 ![Alt text](/screenshots/screenshot5.png?raw=true "screenshot5.png")
+###Setup
+Before you get started you need to install the python Blessing library to colorize the terminal output. 
+```
+$ sudo pip install blessings
+```
+
 ###Basic wordsworth:
 ####Example 1: Print the top 50 n-words in textfile.txt
 ```
-$ python wordsworth --filename textfile.txt --top 50
+$ python wordsworth.py --filename textfile.txt --top 50
 ```
 
 ```
-$ python wordsworth -f textfile.txt -t 50
+$ python wordsworth.py -f textfile.txt -t 50
 ```
 ####Example 2: Print the top n-tuples of up to 10 words in textfile.txt
 ```
-$ python wordsworth --filename textfile.txt --ntuple 10
+$ python wordsworth.py --filename textfile.txt --ntuple 10
 ```
 ```
-$ python wordsworth -f textfile.txt -n 10
+$ python wordsworth.py -f textfile.txt -n 10
 ```
 ####Example 3: Ignore the words 'the', 'a' and '--'.
 ```
-$ python wordsworth --filename textfile.txt --ignore the,a,--
+$ python wordsworth.py --filename textfile.txt --ignore the,a,--
 ```
 ```
-$ python wordsworth -f textfile.txt -i the,a,--
+$ python wordsworth.py -f textfile.txt -i the,a,--
 ```
 ####Example 4: Ignore just '--'.
 ```
-$ python wordsworth --filename textfile.txt --ignore ,--
+$ python wordsworth.py --filename textfile.txt --ignore ,--
 ```
 ```
-$ python wordsworth -f textfile.txt -i ,--
+$ python wordsworth.py -f textfile.txt -i ,--
 ```
 ###NLTK-enabled wordsworth:
 wordsworth-nltk.py provides extended analysis, including a frequency analysis of verbs, nouns, adjectives, pronouns etc.
@@ -45,7 +51,7 @@ Step 2. Launch the python interpretter
 ```
 $ python
 ```
-Step 3. Download the Brown dataset
+Step 3. Download the `Brown` and `Punkt` dataset
 ```python
 >>> import nltk
 >>> nltk.download('brown')
