@@ -1,6 +1,6 @@
 wordsworth
 ==========
-Frequency analysis of words, letter, n-grams nad more!
+Here is an example of some typical output you can expect to see.
 ![Alt text](/screenshots/screenshot5.png?raw=true "screenshot5.png")
 ###Setup
 Before you get started you need to install the python `blessings` library to colorize the terminal output. 
