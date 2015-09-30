@@ -23,6 +23,7 @@ from __future__ import print_function # for Python 2 backwards compatibility
 from blessings import Terminal
 import collections
 import re
+import json
 
 # Blessings for terminal colors
 term  = Terminal()
@@ -49,6 +50,12 @@ class wordsworth:
     n_words = []
     prev_n_words = []
     counters = []
+    result = {
+                'overview': {},
+                'components': {},
+                'freqency_analysis':{},
+                'total':{}
+            }
 
     word_stats = {
                   'total_chars': 0,
@@ -77,53 +84,60 @@ class wordsworth:
 
 
     def __init__(self, commandline_args):
-        args = commandline_args
-        self.ignore_list = str(args.ignore_list).split(",")
+        self.args = commandline_args
+        self.ignore_list = str(self.args.ignore_list).split(",")
         
 
     def print_n_word_frequencies(self, n_word_counter):
         total_entries = sum(n_word_counter.values())
         unique_entries = len(n_word_counter)
         if total_entries > 0:
-            m = n_word_counter.most_common(min(unique_entries, args.top_n))
+            components = {}
+            m = n_word_counter.most_common(min(unique_entries, self.args.top_n))
             n = len(m[0][0].split(' '))
 
-            print('\n===' + blue + ' Commonest ' + str(n) + '-words' + normal + '===')
+            #print('\n===' + blue + ' Commonest ' + str(n) + '-words' + normal + '===')
 
-            for i in range(0, min(unique_entries, args.top_n)):
+            for i in range(0, min(unique_entries, self.args.top_n)):
                 n_word = m[i][0]
                 count = m[i][1]
                 perc = 100.0 * (count / float(total_entries))
+                components[n_word] = [str(count).split('.')[0], purple + str(perc)[:5]]
+                # print((str(i + 1) + ' = ' + purple + n_word +
+                #     normal + ' (' + purple + str(count).split('.')[0] + normal +
+                #     ' = ' + purple + str(perc)[:5] + '%' + normal + ')'))
 
-                print((str(i + 1) + ' = ' + purple + n_word +
-                    normal + ' (' + purple + str(count).split('.')[0] + normal +
-                    ' = ' + purple + str(perc)[:5] + '%' + normal + ')'))
+            self.result['components'][n] = components
 
 
-    def print_results(self):
-        print('\n===' + blue + ' RESULTS ' + normal + '===')
+    def math_results(self):
 
-        print('File = ' + purple + str(args.inputfile) + normal)
-        print('Longest word = ' + purple + str(self.word_stats['longest_word']) + normal +
-            ' (' + purple + str(self.word_stats['max_length']) + normal + ')')
+        file = purple + str(self.args.inputfile) + normal
+        longest_word      = purple + str(self.word_stats['longest_word']) + normal
+        size_longest_word = purple + str(self.word_stats['max_length']) + normal
+        shortest_word      = purple + str(self.word_stats['shortest_word']) + normal
+        size_shortest_word = purple + str(self.word_stats['min_length']) + normal
+        mean_word_length_chars = purple + str(self.word_stats['mean_length']) + normal
 
-        print('Shortest word = ' + purple + str(self.word_stats['shortest_word']) + normal +
-            ' (' + purple + str(self.word_stats['min_length']) + normal + ')')
+        total_words_parsed= purple + str(self.word_stats['total_words']).split('.')[0] + normal
 
-        print('Mean word length /chars = ' + purple + str(self.word_stats['mean_length']) +
-                normal)
+        total_chars_parsed = purple + str(self.word_stats['total_chars']) + normal
 
-        print('Total words parsed = ' + purple +
-                str(self.word_stats['total_words']).split('.')[0] + normal)
-
-        print('Total chars parsed = ' + purple + str(self.word_stats['total_chars']) +
-                normal)
+        self.result['overview'] = {
+            'file':file,
+            'longest_word':longest_word,
+            'size_longest_word':size_longest_word,
+            'shortest_word':shortest_word,
+            'size_shortest_word':size_shortest_word,
+            'mean_word_length_chars':mean_word_length_chars,
+            'total_words_parsed':total_words_parsed,
+            'total_chars_parsed':total_chars_parsed,
+        }
 
         for i in range(self.max_n_word):
             self.print_n_word_frequencies(self.counters[i])
 
         total_dev = 0.0
-        print('\n===' + blue + ' FREQUENCY ANALYSIS ' + normal + '===')
         for char in sorted(iter(self.word_stats['char_percentages'])):
             bar = ''
             perc = self.word_stats['char_percentages'][char]
@@ -134,32 +148,32 @@ class wordsworth:
 
             for i in range(0, int(perc)):
                 bar += '#'
-            print(char + ' |' + red + bar + normal + ' ' + str(perc)[:4] +
-                    '% (' + str(dev)[:4] + '% deviation from random)')
 
-        print('\nTotal percentage deviation from random = ' +
-                str(total_dev).split('.')[0] + '%')
-
+        total_percentage_deviation_from_random = str(total_dev).split('.')[0]
         average_dev = total_dev / 26.0
+        average_percentage_deviation_from_random = str(average_dev)[:4]
 
-        print('Average percentage deviation from random = ' +
-                str(average_dev)[:4] + '%')
+        lexical_density = str(self.word_stats['lexical_density'])[:5]
 
-        print('Lexical density = ' + str(self.word_stats['lexical_density'])[:5] + '%')
+        self.result['total'] = {
+            'average_percentage_deviation_from_random':average_percentage_deviation_from_random,
+            'total_percentage_deviation_from_random':total_percentage_deviation_from_random,
+            'lexical_density':lexical_density,
+        }
+
 
     def init_word_counters(self):
-        self.max_n_word = args.max_n_word
+        self.max_n_word = self.args.max_n_word
         self.n_words = ['' for i in range(self.max_n_word)]
         self.prev_n_words = ['' for i in range(self.max_n_word)]
         self.counters = [collections.Counter() for i in range(self.max_n_word)]
 
 
     def read_file(self):
-        print("[+] Analysing '" + args.inputfile + "'")
-        if args.allow_digits:
-            self.words = re.findall(r"['\-\w]+", open(args.inputfile).read().lower())
+        if self.args.allow_digits:
+            self.words = re.findall(r"['\-\w]+", open(self.args.inputfile).read().lower())
         else:
-            self.words = re.findall(r"['\-A-Za-z]+", open(args.inputfile).read().lower())
+            self.words = re.findall(r"['\-A-Za-z]+", open(self.args.inputfile).read().lower())
 
 
     def compute_stats(self):
@@ -223,6 +237,9 @@ class wordsworth:
         self.word_stats['lexical_density'] = 100.0 * total_unique_words / float(total_words)
 
 
+    def print_json(self):
+            print(json.dumps([self.result]))
+
 if __name__ == '__main__':
     import argparse
 
@@ -239,4 +256,5 @@ if __name__ == '__main__':
     w.init_word_counters()
     w.read_file()
     w.compute_stats()  
-    w.print_results()
+    w.math_results()
+    w.print_json()
